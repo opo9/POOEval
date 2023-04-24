@@ -11,6 +11,25 @@ public class Magasin {
     private static final int TYPE_UNIT = 1;
     private static final int TYPE_WEIGHT = 2;
     private static final int TYPE_ELECTRONIC = 3;
+    private List<Produit> produits;
+
+    public Magasin() {
+        this.produits = new ArrayList<>();
+    }
+    
+    public void ajouterProduit(Produit produit) {
+        this.produits.add(produit);
+    }
+    
+    public List<Produit> getListeProduits() {
+        return this.produits;
+    }
+
+    public void afficherTousLesProduits() {
+        for (Produit produit : this.produits) {
+            System.out.println(produit.toString());
+        }
+    }
 
     // Définition de la classe Produit
     static class Produit {
@@ -143,12 +162,16 @@ public static void afficherProduits(Produit[] produits) {
 public static void main(String[] args) {
     Scanner scanner = new Scanner(System.in);
 
+    Magasin magasin = new Magasin();
     // Création de quelques produits de test
     Produit produit1 = new Produit("T-shirt", "100% coton, toutes tailles", 15);
     Produit produit2 = new Produit("Tomates", "BIO, origine France", 3.5, LocalDate.now());
     Produit produit3 = new Produit("Smartphone", "Apple iPhone 13, 128 Go, couleur bleu", LocalDate.now());
 
-     afficherProduits(new Produit[] { produit1, produit2, produit3 });
+    magasin.ajouterProduit(produit1);
+    magasin.ajouterProduit(produit2);
+    magasin.ajouterProduit(produit3);
+    magasin.afficherTousLesProduits();
 
     // Remplissage du panier
     Panier panier = new Panier();
