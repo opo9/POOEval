@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Magasin {
 
@@ -16,7 +17,7 @@ public class Magasin {
     public Magasin() {
         this.produits = new ArrayList<>();
     }
-    
+
     public void ajouterProduit(Produit produit) {
         this.produits.add(produit);
     }
@@ -40,17 +41,33 @@ public class Magasin {
         private double prixKilo;
         private LocalDate dateAchat;
         private boolean garantie;
+        private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
+        private int id;
 
         // Constructeur pour les produits vendus à l'unité
         public Produit(String nom, String description, double prixUnitaire) {
+            this.id = ID_GENERATOR.getAndIncrement();
+           
+            if (nom == null || description == null || nom == "" || description == "") {
+                throw new IllegalArgumentException("Le nom et la description ne doivent pas être nuls.");
+            }
+            
             this.nom = nom;
             this.description = description;
             this.type = TYPE_UNIT;
             this.prixUnitaire = prixUnitaire;
         }
 
+        public int getId() {
+            return id;
+        }
+
         // Constructeur pour les produits vendus au poids
         public Produit(String nom, String description, double prixKilo, LocalDate dateAchat) {
+            this.id = ID_GENERATOR.getAndIncrement();
+            if (nom == null || description == null || nom == "" || description == "") {
+                throw new IllegalArgumentException("Le nom et la description ne doivent pas être nuls.");
+            }
             this.nom = nom;
             this.description = description;
             this.type = TYPE_WEIGHT;
@@ -60,6 +77,11 @@ public class Magasin {
 
         // Constructeur pour les appareils électroniques
         public Produit(String nom, String description, LocalDate dateAchat) {
+            this.id = ID_GENERATOR.getAndIncrement();
+
+            if (nom == null || description == null || nom == "" || description == "") {
+                throw new IllegalArgumentException("Le nom et la description ne doivent pas être nuls.");
+            }
             this.nom = nom;
             this.description = description;
             this.type = TYPE_ELECTRONIC;
@@ -85,7 +107,7 @@ public class Magasin {
         // Méthode pour afficher les informations d'un produit
         @Override
         public String toString() {
-            String s = nom + " - " + description + " : ";
+            String s = id + " " + nom + " - " + description + " : ";
             switch (type) {
                 case TYPE_UNIT:
                     s += prixUnitaire + " euros l'unité";
@@ -164,7 +186,7 @@ public static void main(String[] args) {
 
     Magasin magasin = new Magasin();
     // Création de quelques produits de test
-    Produit produit1 = new Produit("T-shirt", "100% coton, toutes tailles", 15);
+    Produit produit1 = new Produit("test", "100% coton, toutes tailles", 15);
     Produit produit2 = new Produit("Tomates", "BIO, origine France", 3.5, LocalDate.now());
     Produit produit3 = new Produit("Smartphone", "Apple iPhone 13, 128 Go, couleur bleu", LocalDate.now());
 
