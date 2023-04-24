@@ -21,7 +21,7 @@ public class Magasin {
     public void ajouterProduit(Produit produit) {
         this.produits.add(produit);
     }
-    
+
     public List<Produit> getListeProduits() {
         return this.produits;
     }
@@ -47,11 +47,11 @@ public class Magasin {
         // Constructeur pour les produits vendus à l'unité
         public Produit(String nom, String description, double prixUnitaire) {
             this.id = ID_GENERATOR.getAndIncrement();
-           
+
             if (nom == null || description == null || nom == "" || description == "") {
                 throw new IllegalArgumentException("Le nom et la description ne doivent pas être nuls.");
             }
-            
+
             this.nom = nom;
             this.description = description;
             this.type = TYPE_UNIT;
@@ -141,73 +141,82 @@ public class Magasin {
             List<Produit> liste = produits.getOrDefault(produit.type, new ArrayList<>());
             liste.add(produit);
             produits.put(produit.type, liste);
-}
-public void afficherContenu() {
-        System.out.println("Contenu du panier :");
-        for (int type : produits.keySet()) {
-            System.out.println("Type " + type + " :");
-            for (Produit produit : produits.get(type)) {
-                System.out.println("- " + produit.nom);
+        }
+
+        // Méthode pour retirer un produit du panier
+        public void retirerProduit(Produit produit) {
+            List<Produit> liste = produits.get(produit.type);
+            if (liste != null) {
+                liste.remove(produit);
             }
         }
-    }
 
-    // Méthode pour calculer le prix total du panier
-    public double calculerPrixTotal() {
-        double prixTotal = 0;
-        for (int type : produits.keySet()) {
-            for (Produit produit : produits.get(type)) {
-                switch (type) {
-                    case TYPE_UNIT:
-                        prixTotal += produit.calculerPrix(1);
-                        break;
-                    case TYPE_WEIGHT:
-                        prixTotal += produit.calculerPrix(2.5);
-                        break;
-                    case TYPE_ELECTRONIC:
-                        prixTotal += 500; // prix fictif pour les appareils électroniques
-                        break;
+        public void afficherContenu() {
+            System.out.println("Contenu du panier :");
+            for (int type : produits.keySet()) {
+                System.out.println("Type " + type + " :");
+                for (Produit produit : produits.get(type)) {
+                    System.out.println("- " + produit.nom);
                 }
             }
         }
-        return prixTotal;
+
+        // Méthode pour calculer le prix total du panier
+        public double calculerPrixTotal() {
+            double prixTotal = 0;
+            for (int type : produits.keySet()) {
+                for (Produit produit : produits.get(type)) {
+                    switch (type) {
+                        case TYPE_UNIT:
+                            prixTotal += produit.calculerPrix(1);
+                            break;
+                        case TYPE_WEIGHT:
+                            prixTotal += produit.calculerPrix(2.5);
+                            break;
+                        case TYPE_ELECTRONIC:
+                            prixTotal += 500; // prix fictif pour les appareils électroniques
+                            break;
+                    }
+                }
+            }
+            return prixTotal;
+        }
     }
-}
 
-public static void afficherProduits(Produit[] produits) {
-    System.out.println("Produits à la vente :");
-    for (int i = 0; i < produits.length; i++) {
-        System.out.println(produits[i]);
+    public static void afficherProduits(Produit[] produits) {
+        System.out.println("Produits à la vente :");
+        for (int i = 0; i < produits.length; i++) {
+            System.out.println(produits[i]);
+        }
     }
-}
 
-public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-    Magasin magasin = new Magasin();
-    // Création de quelques produits de test
-    Produit produit1 = new Produit("test", "100% coton, toutes tailles", 15);
-    Produit produit2 = new Produit("Tomates", "BIO, origine France", 3.5, LocalDate.now());
-    Produit produit3 = new Produit("Smartphone", "Apple iPhone 13, 128 Go, couleur bleu", LocalDate.now());
+        Magasin magasin = new Magasin();
+        // Création de quelques produits de test
+        Produit produit1 = new Produit("test", "100% coton, toutes tailles", 15);
+        Produit produit2 = new Produit("Tomates", "BIO, origine France", 3.5, LocalDate.now());
+        Produit produit3 = new Produit("Smartphone", "Apple iPhone 13, 128 Go, couleur bleu", LocalDate.now());
 
-    magasin.ajouterProduit(produit1);
-    magasin.ajouterProduit(produit2);
-    magasin.ajouterProduit(produit3);
-    magasin.afficherTousLesProduits();
+        magasin.ajouterProduit(produit1);
+        magasin.ajouterProduit(produit2);
+        magasin.ajouterProduit(produit3);
+        magasin.afficherTousLesProduits();
 
-    // Remplissage du panier
-    Panier panier = new Panier();
-    panier.ajouterProduit(produit1);
-    panier.ajouterProduit(produit2);
-    panier.ajouterProduit(produit3);
+        // Remplissage du panier
+        Panier panier = new Panier();
+        panier.ajouterProduit(produit1);
+        panier.ajouterProduit(produit2);
+        panier.ajouterProduit(produit3);
+        panier.retirerProduit(produit3);
 
-    // Affichage du contenu du panier
-    panier.afficherContenu();
+        // Affichage du contenu du panier
+        panier.afficherContenu();
 
-    // Calcul du prix total du panier
-    double prixTotal = panier.calculerPrixTotal();
-    System.out.println("Prix total du panier : " + prixTotal + " euros");
-
-    scanner.close();
-}
+        // Calcul du prix total du panier
+        double prixTotal = panier.calculerPrixTotal();
+        System.out.println("Prix total du panier : " + prixTotal + " euros");
+        scanner.close();
+    }
 }
